@@ -1,0 +1,43 @@
+
+1)Describe the SQLi attack you used, how did you cause the user table to be dumped? What was the
+input string you used?
+
+	I caused the user table to be dumped by injecting another logical comparison in  the SQL select command
+
+	the command on the application was "SELECT first_name, last_name FROM users WHERE user_id = '$id';";
+	and the $id is defined as =$_Request['id']. There is no data validation or sanitation for this input
+
+	Threfore, we can put a ' in the text box to break out of the statement and add more logical checks such as
+	or '1'='1 which will always be true
+
+	Command:
+	1' or '1' = '1
+
+
+2)If you switch the security level in DVWA to “Medium”, does the SQLi attack still work?
+No
+
+	This level uses an escape string to sanitize the ID input. 
+	This can be checked by sending an http get request with the same command but this attack will fail
+	
+	However, one can use the UNION SELECT command to overcome this
+
+
+3) Describe the reflected XSS attack you used, how did it work?
+
+	the XSS protection was turned off. Therfore, one input a script in the text box and have it execute in the page
+
+	This XSS attack uses the following command
+
+	<script>alert("the xss attack was successful")</script>
+
+
+4) If you switch the security level in DVWA to “Medium”, does the XSS attack still work?
+
+	No. This is because the lowercase <script> tag is specifically removed from the input.
+	However, this can be overcome trivially in the following ways to name a few:
+		
+		Sending a nested tag: <scrip<script>t>
+			The application will remove the inner tag but will process the rest of the input as is
+		
+		One can also send the uppercase version <SCRIPT>
